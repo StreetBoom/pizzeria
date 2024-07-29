@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+    nginx:
+        image: nginx:latest
+        ports:
+            - "80:80"
+        volumes:
+            - ./docker/nginx/dev/conf.d:/etc/nginx/conf.d
+            - ./:/var/www/html
+            - ./docker/nginx/dev/logs/nginx:/var/log/nginx
+            - ./docker/socket:/socket
+        container_name: pizzeria_nginx
+        depends_on:
+            - app
+
+    app:
+        build:
+            context: docker/app/dev
+            dockerfile: Dockerfile
+        volumes:
+            - ./:/var/www/html
+            - ./docker/socket:/socket
+        container_name: pizzeria_app
+        user: "${UID}:${GID}"
+        environment:
+            - UID=${UID}
+            - GID=${GID}
+            - APP_ENV=local
+            - APP_DEBUG=true
+            - APP_URL=http://localhost
+            - DB_CONNECTION=pgsql
+            - DB_HOST=db
+            - DB_PORT=5432
+            - DB_DATABASE=pizzeria
+            - DB_USERNAME=root
+            - DB_PASSWORD=root
+            - REDIS_HOST=redis
+            - REDIS_PORT=6379
+            - REDIS_DB=0
+            - REDIS_CACHE_DB=1
+            - CACHE_DRIVER=redis
+            - SESSION_DRIVER=redis
+            - QUEUE_CONNECTION=redis
+        depends_on:
+            - db
+            - redis
+
+    db:
+        image: postgres:latest
+        restart: always
+        container_name: pizzeria_postgres
+        environment:
+            POSTGRES_PASSWORD: root
+            POSTGRES_DB: pizzeria
+            POSTGRES_USER: root
+        ports:
+            - "5432:5432"
+        volumes:
+            - ./docker/postgres/data:/var/lib/postgresql/data
+
+    redis:
+        image: redis:latest
+        ports:
+            - "6379:6379"
+        command: redis-server --appendonly yes
+        container_name: pizzeria_redis
