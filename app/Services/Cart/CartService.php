@@ -24,6 +24,7 @@ class CartService
      * +1 товар
      *
      * @param Product $product
+     * @param int $quantity
      * @return string|null
      */
     public function addItem(Product $product, int $quantity = 1): ?string
