@@ -55,7 +55,7 @@
             @if(auth()->check())
                 <a href="{{ route('order.create') }}">Оформить заказ</a>
             @else
-                <a href="{{ route('login') }}">Войти</a>
+                <a href="{{ route('login') }}">Войти для оформления заказа</a>
             @endif
         @else
             <p>Ваша корзина пуста.</p>

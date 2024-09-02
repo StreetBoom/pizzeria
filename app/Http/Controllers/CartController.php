@@ -42,7 +42,9 @@ class CartController extends Controller
      */
     public function add(Request $request, Product $product)
     {
-        $error = $this->cartService->addItem($product);
+        $quantity = (int) $request->input('quantity', 1);
+
+        $error = $this->cartService->addItem($product, $quantity);
 
         if ($error) {
             return redirect()->route('home')->with('error', $error);

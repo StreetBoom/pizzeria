@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\LazyCollection;
 
 class ProductController extends Controller
 {
@@ -14,6 +15,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return view('home', ['products' => Product::all()]);
+        $products = Product::query()->limit(9)->get();
+
+        return view('home', ['products' => $products]);
     }
 }

@@ -24,6 +24,11 @@
                         <p class="card-text"><strong>Цена: {{ number_format($product->price, 2) }} ₽</strong></p>
                         <form method="POST" action="{{ route('cart.add', $product) }}">
                             @csrf
+                            <div class="form-group mb-3">
+                                <label for="quantity_{{ $product->id }}">Количество</label>
+                                <input type="number" class="form-control" id="quantity_{{ $product->id }}"
+                                       name="quantity" value="1" min="1">
+                            </div>
                             <button type="submit" class="btn btn-primary">Добавить в корзину</button>
                         </form>
                     </div>

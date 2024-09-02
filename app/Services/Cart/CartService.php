@@ -26,25 +26,25 @@ class CartService
      * @param Product $product
      * @return string|null
      */
-    public function addItem(Product $product): ?string
+    public function addItem(Product $product, int $quantity = 1): ?string
     {
         $cart = session()->get(self::CART_SESSION_KEY, []);
 
         if (isset($cart[$product->id])) {
-            if ($this->isLimitReached($product, 1, $cart)) {
+            if ($this->isLimitReached($product, $quantity, $cart)) {
                 return $this->getLimitErrorMessage($product);
             }
 
-            $cart[$product->id]['quantity']++;
+            $cart[$product->id]['quantity'] += $quantity;
         } else {
-            if ($this->isLimitReached($product, 1, $cart)) {
+            if ($this->isLimitReached($product, $quantity, $cart)) {
                 return $this->getLimitErrorMessage($product);
             }
 
             $cart[$product->id] = [
                 'productId' => $product->id,
                 'name' => $product->name,
-                'quantity' => 1,
+                'quantity' => $quantity,
                 'price' => $product->price,
                 'category' => $product->category->name,
             ];
@@ -54,6 +54,7 @@ class CartService
 
         return null;
     }
+
 
     /**
      * Уудаление товара
