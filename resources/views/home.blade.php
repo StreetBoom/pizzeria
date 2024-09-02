@@ -36,4 +36,7 @@
             </div>
         @endforeach
     </div>
+    <div class="d-flex justify-content-center">
+        {{ $products->links('pagination::bootstrap-5') }}
+    </div>
 @endsection
